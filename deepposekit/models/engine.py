@@ -1,18 +1,5 @@
-# -*- coding: utf-8 -*-
-# Copyright 2018-2019 Jacob M. Graving <jgraving@gmail.com>
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-
-#    http://www.apache.org/licenses/LICENSE-2.0
-
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
+#removed subpixellayer
+#replaced Model() output from kezpoints to outputs
 import numpy as np
 from tensorflow.keras import Model
 from tensorflow.keras.layers import Input
@@ -78,25 +65,8 @@ class BaseModel:
         outputs = self.train_model(self.inputs)
         if isinstance(outputs, list):
             outputs = outputs[-1]
-        if self.subpixel:
-            kernel_size = np.min(output_shape)
-            kernel_size = (kernel_size // largest_factor(kernel_size)) + 1
-            sigma = output_sigma
-            keypoints = SubpixelMaxima2D(
-                kernel_size,
-                sigma,
-                upsample_factor=100,
-                index=keypoints_shape[0],
-                coordinate_scale=2 ** downsample_factor,
-                confidence_scale=255.0,
-            )(outputs)
-        else:
-            keypoints = Maxima2D(
-                index=keypoints_shape[0],
-                coordinate_scale=2 ** downsample_factor,
-                confidence_scale=255.0,
-            )(outputs)
-        self.predict_model = Model(self.inputs, keypoints, name=self.train_model.name)
+# removed subpixel layer
+        self.predict_model = Model(self.iputs, outputs, name=self.train_model.name)
         self.predict = self.predict_model.predict
         self.predict_generator = self.predict_model.predict_generator
         self.predict_on_batch = self.predict_model.predict_on_batch
